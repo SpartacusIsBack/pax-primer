@@ -19,3 +19,8 @@ Generates a .csv (4).
 4. run36.csv
 csv genereated by (3) see headings for descriptions of contents.
 
+5. am241lib.py
+A python library to visualize and calibrate data that uses an Americium source for its calibration
+
+6. run67-BTV-241am.ipynb
+A jupyter notebook that visualizes and calibrates the data of the run 67 on a chromox target with an americium source
