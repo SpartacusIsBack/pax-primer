@@ -271,7 +271,7 @@ class Coadd_data:
         - offset_base: float, base for offset scaling (default 1.3)
         - do_log: bool, whether to use log scale for y-axis
         """
-        plt.figure(figsize=(15, 9))
+        plt.figure(figsize=(9, 6))
         start = 0
         self.all_histos = np.zeros((2, len(self.ch_list), nbins))
         for nn, ch in enumerate(self.ch_list):
@@ -328,8 +328,9 @@ class CubicSplineWithUncertainty:
         y_perturbed = self.y + np.random.normal(0, self.y_err, (self.n_samples, len(self.y)))
 
         # Fit splines to all perturbed datasets
-        self.splines = [CubicSpline(x_perturbed[i], y_perturbed[i]) for i in range(self.n_samples)]
         self.cs = CubicSpline(self.x, self.y)
+        self.splines = [CubicSpline(x_perturbed[i], y_perturbed[i]) for i in range(self.n_samples)]
+        
 
     def __call__(self, x_eval):
         """Evaluate the mean spline at x_eval."""
@@ -1170,10 +1171,10 @@ class Calibration :
                     max_count = max(zc_filt)
                     adc_delta += 10
                     if zoom_tries > 4:
-                        print(f"Couldn't find peak near {peak_adc[i]} ADC")
-                        do_fit = False
-                        break
-                        # raise StopIteration(f"Couldn't find peak near {peak_adc[i]} ADC")
+                        # print(f"Couldn't find peak near {peak_adc[i]} ADC")
+                        # do_fit = False
+                        # break
+                        raise StopIteration(f"Couldn't find peak near {peak_adc[i]} ADC")
                     zoom_tries += 1
                     if zoom_tries> 1:
                         if do_plot:
@@ -1229,6 +1230,8 @@ class Calibration :
 
         print(f"The ADC values of the peaks are : {mu_adc}")
         print(f"The uncertainties for the peak's ADC values are :{mu_adc_sig}")
+        if np.any(mu_adc_sig > 0.7):
+            raise ValueError("The uncertainties on the peak's center are too high, failed to calibrate")
 
         # x_test = np.linspace(0, mu_adc[-1])
         # plt.errorbar(mu_adc, peak_e,xerr=sigma_adc, fmt="rx", )
@@ -1390,9 +1393,11 @@ class Calibration :
             e_std[mask_adc] = None
 
             is_all_none = np.all(ds.p_energy[:]==None)
+            is_all_nan = np.all(np.isnan(ds.p_energy[:]))
             print(f"The energy array is full of None values : {is_all_none}")
+            print(f"The energy array is full of NaN values : {is_all_nan}")
             print(f"The energy array has nan values : {np.isnan(ds.p_energy[:]).any()}")
-            if is_all_none:
+            if is_all_none or is_all_nan:
                 raise ValueError("The channel doesn't have any energy values")
             print(f"\n The channel is calibrated between {min(ds.p_energy[:]):.3f} and {max(ds.p_energy[:]):.3f} keV")
 
@@ -1429,9 +1434,11 @@ class Calibration :
             e_std[mask_adc] = None
 
             is_all_none = np.all(ds.p_energy[:]==None)
+            is_all_nan = np.all(np.isnan(ds.p_energy[:]))
             print(f"The energy array is full of None values : {is_all_none}")
+            print(f"The energy array is full of NaN values : {is_all_nan}")
             print(f"The energy array has nan values : {np.isnan(ds.p_energy[:]).any()}")
-            if is_all_none:
+            if is_all_none or is_all_nan:
                 raise ValueError("The channel doesn't have any energy values")
             print(f"\n The channel is calibrated between {min(ds.p_energy[:]):.3f} and {max(ds.p_energy[:]):.3f} keV")
 
