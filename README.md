@@ -1,6 +1,6 @@
 # TEScal — TES Microcalorimeter Calibration Library
 
-This library provides tools to calibrate a TES (Transition Edge Sensor) microcalorimeter detector using measured spectra. It performs peak finding, fitting (with Gaussians and splines), and calibration curve construction, and includes utilities for visualization, uncertainty estimation, and validation.
+This library provides tools to calibrate a TES (Transition Edge Sensor) microcalorimeter detector using measured spectra. It performs peak finding, fitting (with Gaussians and splines), and calibration curve construction, and includes utilities for visualization, uncertainty estimation, and validation. You will find examples of its use in the run92-Si-133ba_241am.ipynb file.
 
 ---
 
